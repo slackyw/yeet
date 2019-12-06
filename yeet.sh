@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# sudo apt install espeak beep -y;git clone "https://github.com/floriangarciasoto/ilestoumonprojet";cd ilestoumonprojet/;bash yeet.sh 60 "pikatchu, attak eclair" 3 20 300 2000
+# sudo apt install espeak beep -y;git clone "https://github.com/slackyw/yeet";cd yeet/;bash yeet.sh 60 "pikatchu, attak eclair" 3 20 300 2000
 
 export DISPLAY=:0
 amixer sset 'Master' unmute 1>/dev/null
