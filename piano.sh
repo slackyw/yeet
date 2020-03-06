@@ -16,9 +16,14 @@ declare -a octave8=('4186' '4434' '4698' '4978' '5274' '5587' '5919' '6271' '664
 declare -a octave9=('8372' '8869' '9397' '9956' '10548' '11175' '11839' '12543' '13289' '14080' '14917' '15804')
 declare -a octave10=('16744' '17739' '18794' '19912' '21096' '22350' '23679' '25087' '26579' '28160' '29834' '31608')
 
+((octave=0))
+echo "Octave choisi : 0"
+
 while true; do
 read -rsn1 input
 if [ "$input" != "" ];then
-	echo ${octave$1[${idx[$input]}]}
+	if [ "$input" == "0" -o "$input" == "1" -o "$input" == "2" -o "$input" == "3" -o "$input" == "4" -o "$input" == "5" -o "$input" == "6" -o "$input" == "7" -o "$input" == "8" -o "$input" == "9" ];then ((octave=$input));echo "Changement d'octave : $octave"
+	else eval 'beep -l 50 -f ${octave'$octave'[${idx[$input]}]} &'
+	fi
 fi
 done
