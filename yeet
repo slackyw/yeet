@@ -84,6 +84,42 @@ if [ $# -ne 0 ]; then
 			if [ $# -gt 3 ];then for i in $(seq 1 $nb); do firefox --new --tab $url; done
 			else for i in $(seq 1 $nb); do firefox --new-window $url; done; fi
 			;;
+		--piano | -p )
+			declare -A idx=(['q']=0 ['s']=1 ['d']=2 ['f']=3 ['g']=4 ['h']=5 ['j']=6 ['k']=7 ['l']=8 ['m']=9)
+			declare -a octave0=('16' '17' '18' '19' '20' '21' '23' '24' '25' '27' '29' '30')
+			declare -a octave1=('32' '34' '36' '38' '41' '43' '46' '49' '51' '55' '58' '61')
+			declare -a octave2=('65' '69' '73' '77' '82' '87' '92' '98' '103' '110' '116' '123')
+			declare -a octave3=('130' '138' '146' '155' '164' '174' '185' '196' '207' '220' '233' '246')
+			declare -a octave4=('261' '277' '293' '311' '329' '349' '369' '392' '415' '440' '466' '493')
+			declare -a octave5=('523' '554' '587' '622' '659' '698' '739' '783' '830' '880' '932' '987')
+			declare -a octave6=('1046' '1108' '1174' '1244' '1318' '1396' '1479' '1567' '1661' '1760' '1864' '1975')
+			declare -a octave7=('2093' '2217' '2349' '2489' '2637' '2793' '2959' '3135' '3322' '3520' '3729' '3951')
+			declare -a octave8=('4186' '4434' '4698' '4978' '5274' '5587' '5919' '6271' '6644' '7040' '7458' '7902')
+			declare -a octave9=('8372' '8869' '9397' '9956' '10548' '11175' '11839' '12543' '13289' '14080' '14917' '15804')
+			declare -a octave10=('16744' '17739' '18794' '19912' '21096' '22350' '23679' '25087' '26579' '28160' '29834' '31608')
+			((octave=0))
+			echo "Octave choisi : 0"
+			while true; do
+			read -rsn1 input
+			if [ "$input" != "" ];then
+				if [ "$input" == "0" -o "$input" == "1" -o "$input" == "2" -o "$input" == "3" -o "$input" == "4" -o "$input" == "5" -o "$input" == "6" -o "$input" == "7" -o "$input" == "8" -o "$input" == "9" ];then ((octave=$input));echo "Changement d'octave : $octave"
+				else eval 'beep -l 50 -f ${octave'$octave'[${idx[$input]}]} &'; fi
+			fi
+			done
+			;;
+		--abouibouiboui | -a )
+			while true; do
+				read -rsn1 input
+				if [ "$input" == "a" ];then espeak -v fr "a" &; fi
+				if [ "$input" == "b" ];then espeak -v fr "boui" &; fi
+			done
+			;;
+		--espeak-key | -e )
+			while true; do
+				read -rsn1 input
+				if [ "$input" != "" ]; then espeak "$input";fi
+			done
+			;;
 	esac
 else echo "Usage of yeet : bash yeet.sh OPTION...
   -i | --dpkg-i
@@ -92,6 +128,9 @@ else echo "Usage of yeet : bash yeet.sh OPTION...
   -c | --colors [nb] [plage]
   -k | --keycolors [brightness] [beep]
   -w | --windows [url] [nb] [tab]
+  -p | --piano
+  -a | --abouibouiboui
+  -e | --espeak-key
 Exemples :
 $ yeet -s 60 \"pikatchu, attak eclair\" 3 20 300 2000"
 fi
