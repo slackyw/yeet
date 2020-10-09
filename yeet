@@ -63,6 +63,7 @@ if [ $# -ne 0 ]; then
 			done
 			;;
 		--keycolors | -k )
+			if [ $# -gt 2 ];then sudo echo; fi
 			while true; do
 				read -rsn1 input
 				if [ "$input" != "" ];then
@@ -87,6 +88,6 @@ else echo "Usage of yeet : bash yeet.sh OPTION...
   -k | --keycolors [brightness] [beep]
   -w | --windows [url] [nb] [tab]
 Exemples :
-  bash yeet -s 60 \"pikatchu, attak eclair\" 3 20 300 2000"
+$ yeet -s 60 \"pikatchu, attak eclair\" 3 20 300 2000"
 fi
 xrandr --output $outp --gamma 1:1:1 --brightness 1
