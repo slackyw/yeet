@@ -1,0 +1,92 @@
+#!/bin/bash
+
+c() {
+	awk 'BEGIN{printf "%.3f\n", ('$1')}' | sed s/,/\./
+}
+
+export DISPLAY=:0
+outp=$(xrandr | grep " con" | awk '{print $1}')
+if [ $# -ne 0 ]; then
+	case $1 in
+		--dpkg-i | -i )
+			sudo apt install espeak beep -y
+			if [ ! -d /home/$USER/bin ]; then mkdir ~/bin; fi
+			if [ ! -f /home/$USER/bin/yeet ]; then
+				pth=$( cd "$(dirname "$0")" > /dev/null 2>&1 ; pwd -P )
+				cp $pth/yeet ~/bin/
+				chmod u+x $pth/yeet
+			fi
+			if [ $(echo $PATH | grep "~/bin/" | wc -l) -eq 0 ]; then echo "Ajouter au \$PATH : PATH=\"\$PATH:~/bin/\""; fi
+			;;
+		--beepscreen | -s )
+			volume=0; if [ $# -gt 1 ];then volume=$2; fi
+			phrase=""; if [ $# -gt 2 ];then phrase=$3; fi
+			nb=1; if [ $# -gt 3 ];then nb=$4; fi
+			lbeep=0; if [ $# -gt 4 ];then lbeep=$5; fi
+			fmin=300; if [ $# -gt 5 ];then fmin=$6; fi
+			fmax=500; if [ $# -gt 6 ];then fmax=$7; fi
+			if [ $lbeep -gt 0]; then sudo echo; fi
+			if [ $phrase != "" ];then
+				amixer sset 'Master' unmute 1>/dev/null
+				amixer sset 'Master' $volume% 1>/dev/null
+				espeak "$phrase"
+			fi
+			for i in $(seq 1 $nb); do
+				xrandr --output $outp --gamma 0.$((RANDOM%9+1)):0.$((RANDOM%9+1)):0.$((RANDOM%9+1))
+				if [ $lbeep -gt 0 ]; then sudo env -i beep -l $lbeep -f $((RANDOM%($fmax-$fmin)+$fmin)); fi
+			done
+			;;
+		--brightness | -b )
+			min=0; if [ $# -gt 1 ];then min=$2; fi
+			max=1; if [ $# -gt 2 ];then max=$3; fi
+			nb=100; if [ $# -gt 3 ];then nb=$4; fi
+			sl=0; if [ $# -gt 4 ];then sl=$5; fi
+			for i in $(seq 1 $nb | sort -nr); do
+				xrandr --output $outp --brightness $(c "$min+$i/($nb)*($max-$min)")
+				if [ $sl -gt 0 ]; then sleep $sl; fi
+			done
+			for i in $(seq 1 $nb); do
+				xrandr --output $outp --brightness $(c "$min+$i/($nb)*($max-$min)")
+				if [ $sl -gt 0 ]; then sleep $sl; fi
+			done
+			;;
+		--colors | -c )
+			nb=1; if [ $# -gt 1 ];then nb=$2; fi
+			plage=100; if [ $# -gt 2 ];then plage=$3; fi
+			for i in $(seq 1 $nb); do
+				for i in $(seq 1 $plage | sort -nr); do xrandr --output $outp --gamma $(c "$i/$plage"):1:1; done
+				for i in $(seq 1 $plage); do xrandr --output $outp --gamma $(c "$i/$plage"):1:1; done
+				for i in $(seq 1 $plage | sort -nr); do xrandr --output $outp --gamma 1:$(c "$i/$plage"):1; done
+				for i in $(seq 1 $plage); do xrandr --output $outp --gamma 1:$(c "$i/$plage"):1; done
+				for i in $(seq 1 $plage | sort -nr); do xrandr --output $outp --gamma 1:1:$(c "$i/$plage"); done
+				for i in $(seq 1 $plage); do xrandr --output $outp --gamma 1:1:$(c "$i/$plage"); done
+			done
+			;;
+		--keycolors | -k )
+			while true; do
+				read -rsn1 input
+				if [ "$input" != "" ];then
+					if [ $# -gt 1 ];then xrandr --output $outp --gamma 0.$((RANDOM%9+1)):0.$((RANDOM%9+1)):0.$((RANDOM%9+1)) --brightness 0.$((RANDOM%9+1))
+					else xrandr --output $outp --gamma 0.$((RANDOM%9+1)):0.$((RANDOM%9+1)):0.$((RANDOM%9+1)); fi
+					if [ $# -gt 2 ];then sudo env -i beep -l 50 -f $((RANDOM%($fmax-$fmin)+$fmin)); fi
+				fi
+			done
+			;;
+		--windows | -w )
+			url=https://pbs.twimg.com/profile_images/1142134932799741952/rlSQOnp4.jpg; if [ $# -gt 1 ];then url=$2; fi
+			nb=1; if [ $# -gt 2 ];then nb=$3; fi
+			if [ $# -gt 3 ];then for i in $(seq 1 $nb); do firefox --new-window $url; done
+			else for i in $(seq 1 $nb); do firefox --new --tab $url; done; fi
+			;;
+	esac
+else echo "Usage of yeet : bash yeet.sh OPTION...
+  -i | --dpkg-i
+  -s | --beepscreen [volume] [phrase] [nb] [longueur beep] [freq min] [freq max]
+  -b | --brightness [min] [max] [plage] [sleep]
+  -c | --colors [nb] [plage]
+  -k | --keycolors [brightness] [beep]
+  -w | --windows [url] [nb] [tab]
+Exemples :
+  bash yeet -s 60 \"pikatchu, attak eclair\" 3 20 300 2000"
+fi
+xrandr --output $outp --gamma 1:1:1 --brightness 1
