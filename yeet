@@ -37,23 +37,26 @@ if [ $# -ne 0 ]; then
 			done
 			;;
 		--brightness | -b )
-			min=0; if [ $# -gt 1 ];then min=$2; fi
-			max=1; if [ $# -gt 2 ];then max=$3; fi
-			nb=100; if [ $# -gt 3 ];then nb=$4; fi
-			sl=0; if [ $# -gt 4 ];then sl=$5; fi
-			for i in $(seq 1 $nb | sort -nr); do
-				xrandr --output $outp --brightness $(c "$min+$i/($nb)*($max-$min)")
-				if [ $sl -gt 0 ]; then sleep $sl; fi
-			done
-			for i in $(seq 1 $nb); do
-				xrandr --output $outp --brightness $(c "$min+$i/($nb)*($max-$min)")
-				if [ $sl -gt 0 ]; then sleep $sl; fi
+			nb=1; if [ $# -gt 1 ];then nb=$2; fi
+			plage=100; if [ $# -gt 2 ];then plage=$3; fi
+			min=0; if [ $# -gt 3 ];then min=$4; fi
+			max=1; if [ $# -gt 4 ];then max=$5; fi
+			sl=0; if [ $# -gt 5 ];then sl=$6; fi
+			for n in $(seq 1 $nb); do
+				for i in $(seq 1 $plage | sort -nr); do
+					xrandr --output $outp --brightness $(c "$min+$i/($plage)*($max-$min)")
+					if [ $sl -gt 0 ]; then sleep $sl; fi
+				done
+				for i in $(seq 1 $plage); do
+					xrandr --output $outp --brightness $(c "$min+$i/($plage)*($max-$min)")
+					if [ $sl -gt 0 ]; then sleep $sl; fi
+				done
 			done
 			;;
 		--colors | -c )
 			nb=1; if [ $# -gt 1 ];then nb=$2; fi
 			plage=100; if [ $# -gt 2 ];then plage=$3; fi
-			for i in $(seq 1 $nb); do
+			for n in $(seq 1 $nb); do
 				for i in $(seq 1 $plage | sort -nr); do xrandr --output $outp --gamma $(c "$i/$plage"):1:1; done
 				for i in $(seq 1 $plage); do xrandr --output $outp --gamma $(c "$i/$plage"):1:1; done
 				for i in $(seq 1 $plage | sort -nr); do xrandr --output $outp --gamma 1:$(c "$i/$plage"):1; done
@@ -63,27 +66,29 @@ if [ $# -ne 0 ]; then
 			done
 			;;
 		--keycolors | -k )
-			if [ $# -gt 2 ];then sudo echo; fi
+			br=0; if [ $# -gt 2 ];then br=$3; fi
+			bp=0; if [ $# -gt 3 ];then bp=$4; fi
+			if [ $bp -eq 1 ];then sudo echo; fi
 			while true; do
 				read -rsn1 input
 				if [ "$input" != "" ];then
-					if [ $# -gt 1 ];then xrandr --output $outp --gamma 0.$((RANDOM%9+1)):0.$((RANDOM%9+1)):0.$((RANDOM%9+1)) --brightness 0.$((RANDOM%9+1))
+					if [ $br -eq 1 ];then xrandr --output $outp --gamma 0.$((RANDOM%9+1)):0.$((RANDOM%9+1)):0.$((RANDOM%9+1)) --brightness 0.$((RANDOM%9+1))
 					else xrandr --output $outp --gamma 0.$((RANDOM%9+1)):0.$((RANDOM%9+1)):0.$((RANDOM%9+1)); fi
-					if [ $# -gt 2 ];then sudo env -i beep -l 50 -f $((RANDOM%($fmax-$fmin)+$fmin)); fi
+					if [ $bp -eq 1 ];then sudo env -i beep -l 50 -f $((RANDOM%($fmax-$fmin)+$fmin)); fi
 				fi
 			done
 			;;
 		--windows | -w )
 			url=https://pbs.twimg.com/profile_images/1142134932799741952/rlSQOnp4.jpg; if [ $# -gt 1 ];then url=$2; fi
 			nb=1; if [ $# -gt 2 ];then nb=$3; fi
-			if [ $# -gt 3 ];then for i in $(seq 1 $nb); do firefox --new-window $url; done
-			else for i in $(seq 1 $nb); do firefox --new --tab $url; done; fi
+			if [ $# -gt 3 ];then for i in $(seq 1 $nb); do firefox --new --tab $url; done
+			else for i in $(seq 1 $nb); do firefox --new-window $url; done; fi
 			;;
 	esac
 else echo "Usage of yeet : bash yeet.sh OPTION...
   -i | --dpkg-i
   -s | --beepscreen [volume] [phrase] [nb] [longueur beep] [freq min] [freq max]
-  -b | --brightness [min] [max] [plage] [sleep]
+  -b | --brightness [nb] [plage] [min] [max] [sleep]
   -c | --colors [nb] [plage]
   -k | --keycolors [brightness] [beep]
   -w | --windows [url] [nb] [tab]
