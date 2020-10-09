@@ -14,7 +14,7 @@ if [ $# -ne 0 ]; then
 			if [ ! -f /home/$USER/bin/yeet ]; then
 				pth=$( cd "$(dirname "$0")" > /dev/null 2>&1 ; pwd -P )
 				cp $pth/yeet ~/bin/
-				chmod u+x $pth/yeet
+				chmod u+x ~/bin/yeet
 			fi
 			if [ $(echo $PATH | grep "~/bin/" | wc -l) -eq 0 ]; then echo "Ajouter au \$PATH : PATH=\"\$PATH:~/bin/\""; fi
 			;;
