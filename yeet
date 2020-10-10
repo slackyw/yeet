@@ -147,4 +147,4 @@ else echo "Usage of yeet : bash yeet.sh OPTION...
 Exemples :
 $ yeet -s 60 \"pikatchu, attak eclair\" 3 20 300 2000"
 fi
-xrandr --output $outp --gamma 1:1:1 --brightness 1
+xrandr --output $outp --gamma 1:1:1 --brightness 1 -o normal
