@@ -110,14 +110,26 @@ if [ $# -ne 0 ]; then
 		--abouibouiboui | -a )
 			while true; do
 				read -rsn1 input
-				if [ "$input" == "a" ];then espeak -v fr "a" &; fi
-				if [ "$input" == "b" ];then espeak -v fr "boui" &; fi
+				if [ "$input" == "a" ];then espeak -v fr "a"; fi
+				if [ "$input" == "b" ];then espeak -v fr "boui"; fi
 			done
 			;;
 		--espeak-key | -e )
 			while true; do
 				read -rsn1 input
-				if [ "$input" != "" ]; then espeak "$input";fi
+				if [ "$input" != "" ]; then espeak "$input"; fi
+			done
+			;;
+		--move-screen | -m )
+			while true; do
+				read -rsn1 input
+				case $input in
+					"z" ) xrandr -o normal;;
+					"q" ) xrandr -o left;;
+					"s" ) xrandr -o inverted;;
+					"d" ) xrandr -o right;;
+				esac
+				if [ "$input" != "" ]; then echo "$input"; fi
 			done
 			;;
 	esac
@@ -131,6 +143,7 @@ else echo "Usage of yeet : bash yeet.sh OPTION...
   -p | --piano
   -a | --abouibouiboui
   -e | --espeak-key
+  -m | --move-screen
 Exemples :
 $ yeet -s 60 \"pikatchu, attak eclair\" 3 20 300 2000"
 fi
