@@ -1,1 +1,1 @@
-https://no healthy upstream
+https://90.37.166.112
