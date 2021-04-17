@@ -1,1 +1,1 @@
-https://no healthy upstream
+https://90.48.234.59
